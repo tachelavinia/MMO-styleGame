@@ -1,0 +1,23 @@
+/**
+*
+*                   LOOP - Tema1 
+*                    realizata de Lavinia Tache, 322 CA
+*
+**/
+
+	Ne propunem sa implementam un joc MMO-style, unde eroii isi petrec viata intr-un univers 2D.
+Fiecare aoartine unei anumite clase si are un anumit set de abilitati la care se pricepe cel mai bine  si pe care le poate dezvolta cel mai repede.
+	La inceputul jocului citim din fisier ( parametru in linia de comanda ) harta pe care sunt plasati in locuri bine definite personajele. Din acest fisier aflam numarul de personaje, numarul de runde si miscarile pe care urmeaza sa le faca eroii. Daca voi eroi ajung in acelasi loc atunci ei se vor lupta, lupta constand in folosirea abilitatilor disponibile impotriva adversarului, o singura data. 
+Datele specifice personajelor se vor modifica pe parcursul luptei ( calcul damage, update level si XP, caldul HP -> vor fi detaliate ulterior ) si vor fi scrise intr-un fisier de iesire dar ca parametru in linia de comanda.
+	Harta mentionata mai sus este un suport pe care se desfasoara jocul si este compusa din locatii cu tipuri diferite de proprietatii. Aceste locatii sunt : land, volcanic, desert, woods.
+	De asemenea, si tipurile de eroi sunt diferite : Knight, Pyromancer, Rogue, Wizard. Initial au in comun level = 0 si XP = 0, HitPoint -ul (viata) fiind specifica fiecarui erou. Tinand cont ca toate personajele au initial XP = 0 si aceasta creste in momentul in care personajul castiga o lupta.
+	Implementarea se bazeaza pe o clasa abstracta Ability din care deriveaza fiecare abilitate. In fiecare clasa derivata este calculat damage tinand cont de modificatorul de rasa si de modificatorul de teren. O alta clasa abstracta este clasa Hero, clasa din care urmeaza sa derivez fiecare tip de erou. Un erou este definit de HP, XP, level si de doua variabile de tipul Ability care reprezinta instante ale claselor de tip abilitate specifice eroului. Astfel fiecare erou calculeaza in implementarea metodei abstracte acceptAttack(Hero hero) isi calculeaza damage-ul pe care il primeste de la adversar hero.ability1.Attack(hero) + hero.ability2.Attack(hero). 
+Parametrul primit de functia Attack este necesar pentru a putea aplica damage-ului race modifiers.
+	Metoda descrisa anterior pentru calculul damage-ului si pentru calcul HP-ului este implementat asemanator in fiecare clasa a eroilor si nu o voi detalia separat. Insa unele abilitati pot da overdamage pe un numar stabilit de runde si , chiar daca runda urmatoare cei doi eroi nu se vor mai lupta tot se va aplica damage over time.
+Am putea analiza spre exemplu abilitatea Ignite a eroilui Pyromancer.
+Aceasta abilitate are in prima runda un damage de 150 + 20 * level si chiar daca victima sa nu se mai lupta cu el runda urmatoare acesta va primi insa overdamage inca doua runde cu cate 50 + 30 * level. Numarul de runde si valoarea damage este tinuta in memorie in cadrul programului sub forma unui flag.
+	De asemenea, damage over time nu se anuleaza doar in momentul in care s-au terminat numarul de runde aferente spell-ului, ci si in momentul in care victima primeste overdamage de la un alt erou. Spre exemplu, daca in runda a doua eroul mentionat ( pe langa over damage Ignite ) primeste over damage de la Knight cu Slam atunci aceasta va anula overdamage-ul primit de Pyromancer si va trebui sa aplice doar imposibilitatea de miscare pentru runda urmatoare.
+	Un erou mai special este Wizard care, prin Deflect, returneaza un damage egal cu procent din damage-ul pe care il primeste de la adversar.
+Procentul se aplica insa unui damage care nu tine cont de rase modifiers, dar tine insa cont de land modifiers.
+	La sfarsitul numarul de runde vor fi scrise in fisier caracteristicile eroilor ( HP, XP, level ) , iar daca eroul 
+este mort se va afisa "dead".
